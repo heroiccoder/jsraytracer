@@ -1,0 +1,29 @@
+{
+	"name": "jsraytracer",
+	"version": "0.0.1",
+	"description": "A ray tracing experiment in Javascript.",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/heroiccoder/jsraytracer.git"
+	},
+	"dependencies": {
+	},
+	"devDependencies": {
+		"grunt": "~0.4.4",
+			"grunt-concat-sourcemap": "~0.4.0",
+			"grunt-contrib-uglify": "~0.4.0"
+	},
+	"keywords": [
+		"raytracer"
+	],
+	"author": {
+		"name": "heroiccoder"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "http://github.com/heroiccoder/jsraytracer/issues/"
+	},
+	"scripts": {
+		"postinstall": "npm dedupe"
+	}
+}

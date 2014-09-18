@@ -314,3 +314,6 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 		}
 	}
 };
+
+
+//# sourceMappingURL=jsraytracer.js.map
