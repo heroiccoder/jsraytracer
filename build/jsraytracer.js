@@ -52,7 +52,6 @@ Vec4.prototype.suma = function(y){
 	return vec_result;
 };
 
-
 // Vec4 center, double radius, color c_dif, color c_spec, double coef_ref, double coef_refr, double coef_tr
 function Sphere(center, radius, c_dif, c_spec, coef_spec, coef_ref, coef_refr, coef_tr)
 {
@@ -66,7 +65,6 @@ function Sphere(center, radius, c_dif, c_spec, coef_spec, coef_ref, coef_refr, c
 	this.coef_tr=coef_tr;
 	return this;
 }
-
 
 // MATERIAL
 
@@ -132,6 +130,7 @@ Color.prototype.suma = function(color2)
 	return color;
 };
 
+
 // CANVAS
 // PAINTING CANVAS
 
@@ -164,15 +163,10 @@ Canvas.prototype.putpixel = function(x, y, color) {
 };
 
 
-
-
-
 // RAYTRACER
 // RAYTRACING ALGORITHM
 
-
-function Raytracer()
-{
+function Raytracer() {
 	
 }
 // void Lambert(Interseccion inter, Vec4 L,Vec4 D, double* int_dif, double* int_spec, double intensity)

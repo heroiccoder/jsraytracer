@@ -1,7 +1,13 @@
 ﻿/** Gruntfile for [jsraytracer](https://github.com/heroiccoder/jsraytracer).
 */
 var sourceFiles = [
-		'src/raytracerOneFile.js'
+		'src/Vec4',
+		'src/Sphere',
+		'src/Material',
+		'src/Intersection',
+		'src/Color',
+		'src/Canvas',
+		'src/Raytracer'
 	];
 
 // Init config. ////////////////////////////////////////////////////////////////
@@ -12,7 +18,7 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		concat_sourcemap: { ////////////////////////////////////////////////////
 			build: {
-				src: sourceFiles,
+				src: sourceFiles.map(function (path) { return path +'.js'; }),
 				dest: 'build/<%= pkg.name %>.js',
 				options: {
 					separator: '\n\n'
