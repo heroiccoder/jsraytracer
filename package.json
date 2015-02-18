@@ -7,6 +7,8 @@
 		"url": "git://github.com/heroiccoder/jsraytracer.git"
 	},
 	"dependencies": {
+		"source-map-support": "~0.2.6",
+		"capataz": "~0.1.2"
 	},
 	"devDependencies": {
 		"grunt": "~0.4.4",
