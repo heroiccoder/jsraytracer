@@ -7,7 +7,12 @@ var sourceFiles = [
 		'src/Intersection',
 		'src/Color',
 		'src/Canvas',
+		'src/Matrix',
+		'src/PointLight',
+		'src/DirectionalLight',
+		'src/ConfigParser',
 		'src/Raytracer'
+		
 	];
 
 // Init config. ////////////////////////////////////////////////////////////////
