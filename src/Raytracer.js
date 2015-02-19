@@ -95,7 +95,7 @@ Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
 
 };
 
-Raytracer.prototype.execute(x_p, y_p)
+Raytracer.prototype.execute=function(x_p, y_p)
 {
   var x,y,z=0;
 	var cam = this.cam;

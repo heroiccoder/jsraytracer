@@ -16,7 +16,6 @@ var sourceFiles = [
 		'src/Raytracer',
 		'src/__epilogue__'
 	];
-
 // Init config. ////////////////////////////////////////////////////////////////
 module.exports = function(grunt) {
 	grunt.file.defaultEncoding = 'utf8';
@@ -51,14 +50,18 @@ module.exports = function(grunt) {
 			},
 			build: { browsers: ['PhantomJS'] }
 		},
+		jshint: { /////////////////////////////////////////////////////////////
+			afterconcat: ['build/jsraytracer.js']
+		},
 	});
 // Load tasks. /////////////////////////////////////////////////////////////////
 	grunt.loadNpmTasks('grunt-concat-sourcemap');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 	
 // Register tasks. /////////////////////////////////////////////////////////////
 	grunt.registerTask('compile', ['concat_sourcemap:build', 'uglify:build']); 
-	grunt.registerTask('build', ['compile', 'karma:build']);
+	grunt.registerTask('build', ['compile', 'jshint:afterconcat', 'karma:build']);
 	grunt.registerTask('default', ['build']);
 };
