@@ -1,8 +1,28 @@
-function Vec4(x, y, z){
+/** Package wrapper and layout.
+*/
+"use strict";
+(function (global, init) { // Universal Module Definition. See <https://github.com/umdjs/umd>.
+	if (typeof define === 'function' && define.amd) {
+		define([], init); // AMD module.
+	} else if (typeof exports === 'object' && module.exports) {
+		module.exports = init(); // CommonJS module.
+	} else { // Browser or web worker (probably).
+		global.jsraytracer = init();
+	}
+})(this, function __init__(){
+	var exports = { };
+
+var Vec4 = exports.Vec4 = function Vec4(x, y, z){
 	this.x = +x || 0;
 	this.y = +y || 0;
 	this.z = +z || 0;
 	this.w = 0.0;	
+}
+Vec4.prototype.copy = function()
+{
+	var vec4 = new Vec4(this.x, this.y, this.z);
+	vec4.w = this.w;
+	return vec4;
 }
 
 // returns the result of the dot product between vectors a and b
@@ -53,22 +73,21 @@ Vec4.prototype.suma = function(y){
 };
 
 // Vec4 center, double radius, color c_dif, color c_spec, double coef_ref, double coef_refr, double coef_tr
-function Sphere(center, radius, c_dif, c_spec, coef_spec, coef_ref, coef_refr, coef_tr)
-{
-    this.center=center;
-    this.radius=radius;
-    this.c_dif=c_dif;
-    this.c_spec=c_spec;
-    this.coef_spec=coef_spec;
+var Sphere = exports.Sphere = function Sphere(center, radius, c_dif, c_spec, coef_spec, coef_ref, coef_refr, coef_tr) {
+	this.center=center;
+	this.radius=radius;
+	this.color_dif=c_dif;
+	this.color_spec=c_spec;
+	this.coef_spec=coef_spec;
 	this.coef_ref=coef_ref;
 	this.coef_refr=coef_refr;
 	this.coef_tr=coef_tr;
 	return this;
 }
 
-// MATERIAL
 
-function Material(color_dif, color_spec, coef_spec, coef_ref, coef_tr, coef_refr) {
+
+var Material = exports.Material = function Material(color_dif, color_spec, coef_spec, coef_ref, coef_tr, coef_refr) {
 	this.color_dif = color_dif || null;
 	this.color_spec = color_spec || null;
 	this.coef_ref = coef_ref || null;
@@ -76,20 +95,18 @@ function Material(color_dif, color_spec, coef_spec, coef_ref, coef_tr, coef_refr
 	this.coef_refr = coef_refr || null;
 }
 
-// INTERSECCION
 
-function Interseccion(exists, sphere, t, P, N, M) {
+var Interseccion = exports.Interseccion = function Interseccion(exists, sphere, t, P, N, M) {
 	this.exists = exists || 0;
 	this.sphere = sphere || null;
 	this.t = t || null;
 	this.P = P || null;
 	this.N = N || null;
 	this.M = M || null;
-}
+}	
 
-// COLOR
 
-function Color(r, g, b) {
+var Color = exports.Color = function Color(r, g, b) {
 	this.r = r | 0;
 	this.g = g | 0;
 	this.b = b | 0;	
@@ -106,7 +123,7 @@ Color.prototype.mult = function(h)
 	return color;
 };
 Color.prototype.suma = function(color2)
-{
+{	
 	var color = new Color(this.r, this.g, this.b);
 	var r,r1,g,g1,b,b1=0;
 	r=Math.floor(color.r);
@@ -131,11 +148,7 @@ Color.prototype.suma = function(color2)
 };
 
 
-// CANVAS
-// PAINTING CANVAS
-
-function Canvas(width, height)
-{
+var Canvas = exports.Canvas = function Canvas(width, height) {	
 	this.width = width;
 	this.height = height;
 	
@@ -143,7 +156,7 @@ function Canvas(width, height)
 }
 
 Canvas.prototype.create_matrix = function(width, height)
-{
+{	
 	var pixels = new Array(width);
 	var i = 0;
 	var j=0;
@@ -159,15 +172,35 @@ Canvas.prototype.create_matrix = function(width, height)
 };
 
 Canvas.prototype.putpixel = function(x, y, color) {
-	this.pixels[Math.floor(x+this.width / 2)][Math.floor(-y + this.height / 2)] = color;
+	this.pixels[x][y] = color;
 };
 
 
-// RAYTRACER
-// RAYTRACING ALGORITHM
+var PointLight = exports.PointLight = function PointLight(vec, intensity, color) {
+	this.vec=vec;
+	this.intensity=intensity;
+	this.color=color;	
+}
 
-function Raytracer() {
-	
+
+var DirectionalLight = exports.DirectionalLight = function DirectionalLight(vec, intensity, color) {
+	this.vec = vec;
+	this.intensity = intensity;
+	this.color = color;
+}
+
+
+var SpotLight = exports.SpotLight = function SpotLight(vec, direction, angle, intensity, color) {
+	this.vec=vec;
+	this.direction=direction;
+	this.angle=angle;
+	this.intensity=intensity;
+	this.color=color;
+}
+
+
+var Raytracer = exports.Raytracer = function Raytracer() {
+
 }
 // void Lambert(Interseccion inter, Vec4 L,Vec4 D, double* int_dif, double* int_spec, double intensity)
 Raytracer.prototype.lambert = function(inter, L, D, int_dif, int_spec, intensity)
@@ -207,11 +240,11 @@ Raytracer.prototype.get_distance=function(p0, p1)
 {
 	var sqr = (p1.x-p0.x)*(p1.x-p0.x) + (p1.y -p0.y)*(p1.y-p0.y) + (p1.z - p0.z) *(p1.z - p0.z);
 	return Math.sqrt(sqr);
-};
+};	
 
 //intersectar(Vec4 O, Vec4 D, double t_min, double t_max, List* spheres)
 Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
-{
+{	
 	var a = D.dot(D);
 	var b = 0-0;
 	var c=0.0;
@@ -262,7 +295,7 @@ Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
 	return inter;
 
 };
-	 
+ 
 //Color trazar_rayo(Vec4 O, Vec4 D, double t_min, double t_max, int rec_max, double ambient, List* point_lights, List* directional_lights, List* spheres, double ambient_refraction, Sphere* last_sphere, Triangle* triangles, int num_triangles, Color* texture, int skinwidth, int skinheight)
 Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, point_lights, directional_lights, spheres, ambient_refraction, last_sphere)
 {
@@ -280,18 +313,18 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 		var int_sombra=0;
 		for(i = 0; i< point_lights.length; i++)
 		{
-			pl = point_lights[i];
+			var pl = point_lights[i];
 			L = new Vec4(pl.vec.x-inter.P.x, pl.vec.y-inter.P.y, pl.vec.z-inter.P.z);
 			int_sombra = intersectar(inter.P, L, 0.0001, 1, sphere);
 			if(!int_sombra.exists)
 			{
 				Lambert(inter, L, D, int_dif, int_spec, pl.intensity);
 			}
-		}
+		}	
 		
 		for(i =0; i<directional_lights.length; i++)
 		{
-			dl = directional_lights[i];
+			var dl = directional_lights[i];
 			L= new Vec4(-dl.vec.x, -dl.vec.y, -dl.vec.z);
 			int_sombra= intersectar(inter.P, L, 0.0001, Infinity, spheres);
 			if(!int_sombra.exists)
@@ -307,7 +340,12 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 			var R = (inter.N.mult(2*inter.N.dot(rest))).sum(D);
 		}
 	}
-};
+	return c;
+};	
 
+
+// See __prologue__.js
+	return exports;
+});
 
 //# sourceMappingURL=jsraytracer.js.map

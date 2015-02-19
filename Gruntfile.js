@@ -1,18 +1,20 @@
 ﻿/** Gruntfile for [jsraytracer](https://github.com/heroiccoder/jsraytracer).
 */
 var sourceFiles = [
+		'src/__prologue__',
 		'src/Vec4',
 		'src/Sphere',
 		'src/Material',
 		'src/Intersection',
 		'src/Color',
 		'src/Canvas',
-		'src/Matrix',
+		//'src/Matrix',
 		'src/PointLight',
 		'src/DirectionalLight',
-		'src/ConfigParser',
-		'src/Raytracer'
-		
+		'src/SpotLight',
+		//'src/ConfigParser',
+		'src/Raytracer',
+		'src/__epilogue__'
 	];
 
 // Init config. ////////////////////////////////////////////////////////////////
@@ -42,14 +44,21 @@ module.exports = function(grunt) {
 					sourceMapName: 'build/<%= pkg.name %>.min.js.map'
 				}
 			}
-		}
+		},
+		karma: { ///////////////////////////////////////////////////////////////
+			options: {
+				configFile: 'test/karma.conf.js'
+			},
+			build: { browsers: ['PhantomJS'] }
+		},
 	});
 // Load tasks. /////////////////////////////////////////////////////////////////
 	grunt.loadNpmTasks('grunt-concat-sourcemap');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-karma');
 	
 // Register tasks. /////////////////////////////////////////////////////////////
 	grunt.registerTask('compile', ['concat_sourcemap:build', 'uglify:build']); 
-	grunt.registerTask('build', ['compile']);
+	grunt.registerTask('build', ['compile', 'karma:build']);
 	grunt.registerTask('default', ['build']);
 };
