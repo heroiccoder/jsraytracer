@@ -8,7 +8,7 @@ var sourceFiles = [
 		'src/Intersection',
 		'src/Color',
 		'src/Canvas',
-		//'src/Matrix',
+		'src/Matrix',
 		'src/PointLight',
 		'src/DirectionalLight',
 		'src/SpotLight',
@@ -51,6 +51,7 @@ module.exports = function(grunt) {
 			build: { browsers: ['PhantomJS'] }
 		},
 		jshint: { /////////////////////////////////////////////////////////////
+			beforeconcat: ['src/Raytracer.js', "src/Matrix.js", "src/Color.js", "src/Vec4.js","src/Canvas.js", "src/DirectionalLight.js","src/PointLight.js","src/Intersection.js","src/Material.js","src/Sphere.js"],
 			afterconcat: ['build/jsraytracer.js']
 		},
 	});
@@ -61,7 +62,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
 	
 // Register tasks. /////////////////////////////////////////////////////////////
-	grunt.registerTask('compile', ['concat_sourcemap:build', 'uglify:build']); 
+	grunt.registerTask('compile', ['jshint:beforeconcat','concat_sourcemap:build', 'uglify:build']); 
 	grunt.registerTask('build', ['compile', 'jshint:afterconcat', 'karma:build']);
 	grunt.registerTask('default', ['build']);
 };

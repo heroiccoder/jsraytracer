@@ -1,9 +1,7 @@
-define("Matrix4", function()
-{
-	function Matrix4()
+var Matrix4 = exports.Matrix4 =function Matrix4()
 	{
 		this.matrix=[[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0]];
-	}
+	};
 	Matrix4.prototype.makeIdentity = function()
 	{
 		var m = new Matrix4();
@@ -12,7 +10,7 @@ define("Matrix4", function()
 		m.matrix[2][2]=1;
 		m.matrix[3][3]=1;
 		return m;
-	}
+	};
 	Matrix4.prototype.makeXRot = function(alpha)
 	{
 		alpha=(alpha/180)*Math.PI;
@@ -24,7 +22,7 @@ define("Matrix4", function()
 		m.matrix[2][1]=Math.sin(alpha);
 		m.matrix[2][2]=Math.cos(alpha);
 		return m;
-	}
+	};
 	Matrix4.prototype.makeYRot = function(alpha)
 	{
 		alpha=(alpha/180)*Math.PI;
@@ -36,7 +34,7 @@ define("Matrix4", function()
 		m.matrix[0][2]=Math.sin(alpha);
 		m.matrix[2][2]=Math.cos(alpha);
 		return m;
-	}
+	};
 	Matrix4.prototype.makeZRot = function(alpha)
 	{
 		alpha=(alpha/180)*Math.PI;
@@ -48,30 +46,30 @@ define("Matrix4", function()
 		m.matrix[1][0]=Math.sin(alpha);
 		m.matrix[1][1]=Math.cos(alpha);
 		return m;
-	}
+	};
 	Matrix4.prototype.makeScale = function(sx, sy, sz)
 	{
-		var m = makeIdentity();
+		var m = this.makeIdentity();
 		m.matrix[0][0]=sx;
 		m.matrix[1][1]=sy;
 		m.matrix[2][2]=sz;
 		return m;
-	}
+	};
 	Matrix4.prototype.makeTranslation = function(tx, ty, tz)
 	{
-		var m = makeIdentity();
+		var m = this.makeIdentity();
 		m.matrix[0][3]=tx;
 		m.matrix[1][3]=ty;
 		m.matrix[2][3]=tz;
 		return m;
-	}
+	};
 	Matrix4.prototype.makeModel = function(matrices, count)
 	{
 		var x = 0;
-		var identity = makeIdentity();
-		var res = makeIdentity();
-		var temp = makeIdentity();
-		if(count==0) return null;
+		var identity = this.makeIdentity();
+		var res = this.makeIdentity();
+		var temp = this.makeIdentity();
+		if(count===0) return null;
 		if(count==1) 
 		{
 			matrices[0].multMatrix(identity, res);
@@ -84,21 +82,21 @@ define("Matrix4", function()
 			res.multMatrix(res, identity, temp);
 		}
 		return res;
-	}
+	};
 	Matrix4.prototype.makeProjection = function(d)
 	{
-		var m = makeIdentity();
+		var m = this.makeIdentity();
 		m.matrix.matrix[0][0]=d;
 		m.matrix.matrix[1][1]=d;
 		m.matrix.matrix[2][2]=d;
 		m.matrix.matrix[3][2]=1;
 		m.matrix.matrix[3][3]=0;
 		return m;
-	}
+	};
 	Matrix4.prototype.makeView = function(matrices, count)
 	{
-		return makeModel(matrices, count);
-	}
+		return this.makeModel(matrices, count);
+	};
 	Matrix4.prototype.copy3d = function(result)
 	{
 		for(var x=0; x<this.matrix.length; x++)
@@ -108,8 +106,8 @@ define("Matrix4", function()
 				result.matrix[x][y]=this.matrix[x][y];
 			}
 		}
-	}
-	Matrix4.prototype.multMatrix(b, result)
+	};
+	Matrix4.prototype.multMatrix= function(b, result)
 	{
 		if(this.matrix[0].length == b.matrix.length && result.matrix[0].length==b.matrix[0].length&&result.matrix.length==this.matrix.length)
 		{
@@ -126,16 +124,15 @@ define("Matrix4", function()
 				}
 			}
 		}
-	}
-	Matrix4.prototype.multVec = function(var v)
+	};
+	Matrix4.prototype.multVec = function(v)
 	{
 		var m = this.matrix;
 		var r = new Vec4();
 		r.x=m[0][0]*v.x+m[0][1]*v.y+m[0][2]*v.z+m[0][3]*v.w;
-        	r.y=m[1][0]*v.x+m.[1][1]*v.y+m[1][2]*v.z+m[1][3]*v.w;
-        	r.y=m[2][0]*v.x+m.[2][1]*v.y+m[2][2]*v.z+m[2][3]*v.w;
-        	r.y=m[3][0]*v.x+m.[3][1]*v.y+m[3][2]*v.z+m[3][3]*v.w;
+        	r.y=m[1][0]*v.x+m[1][1]*v.y+m[1][2]*v.z+m[1][3]*v.w;
+        	r.y=m[2][0]*v.x+m[2][1]*v.y+m[2][2]*v.z+m[2][3]*v.w;
+        	r.y=m[3][0]*v.x+m[3][1]*v.y+m[3][2]*v.z+m[3][3]*v.w;
 		return r;
-	}
-	return Matrix4;
-});
+	};
+

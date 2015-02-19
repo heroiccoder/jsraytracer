@@ -2,4 +2,4 @@ var DirectionalLight = exports.DirectionalLight = function DirectionalLight(vec,
 	this.vec = vec;
 	this.intensity = intensity;
 	this.color = color;
-}
+};

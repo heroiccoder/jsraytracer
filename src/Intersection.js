@@ -5,4 +5,4 @@ var Interseccion = exports.Interseccion = function Interseccion(exists, sphere, 
 	this.P = P || null;
 	this.N = N || null;
 	this.M = M || null;
-}	
+};

@@ -1,6 +1,6 @@
 var Raytracer = exports.Raytracer = function Raytracer() {
 
-}
+};
 // void Lambert(Interseccion inter, Vec4 L,Vec4 D, double* int_dif, double* int_spec, double intensity)
 Raytracer.prototype.lambert = function(inter, L, D, int_dif, int_spec, intensity)
 {
@@ -22,7 +22,7 @@ Raytracer.prototype.lambert = function(inter, L, D, int_dif, int_spec, intensity
 	var nl = 0.0;
 	nl = inter.N.dot(L);
 	var n2 = inter.N.mult(2);
-	R = n2.rest(n2.mult(nl),L);
+	var R = n2.rest(n2.mult(nl),L);
 	R.w=0.0;
 	var res = R.dot(v) / (R.norm() * v.norm());
 	if(res > 1.0) res=1.0;
@@ -51,7 +51,7 @@ Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
 	var inter = new Interseccion(0, null, null, new Vec4(), new Vec4(), new Material(new Color(), new Color(), 0, 0, 0, 0));
 	for(var i = 0; i<spheres.length; i++)
 	{
-		sp = spheres[i];
+		var sp = spheres[i];
 		var center = sp.center;
 		var radius = sp.radius;
 		var rest = O.resta(center);
@@ -113,7 +113,7 @@ Raytracer.prototype.execute=function(x_p, y_p)
 	var antialiasing = this.antialiasing;
 	var view_up_right = (new Matrix4()).makeIdentity();
 
-	if(up.dot(up, view)==0)
+	if(up.dot(up, view)===0)
 	{
   	var norm=up.norm();
 		up.x=up.x/norm;
@@ -142,11 +142,11 @@ Raytracer.prototype.execute=function(x_p, y_p)
 		view_up_right.matrix[2][0]=right.z;
 		view_up_right.matrix[3][0]=right.w;
   }
-	var antialiasing=this.antialiasing;
   x=x_p*vw/cw;
   y=y_p*vh/ch;
   z=d;
   var O = cam.copy();
+  var c;
   if(antialiasing)
   {
   	var x1=(x_p+0.5)*vw/cw;
@@ -159,29 +159,30 @@ Raytracer.prototype.execute=function(x_p, y_p)
 		var D2_transformado = view_up_right.multVec(D2);
 		var D3 = new Vec4(x1, y1, z);
 		var D3_transformado = view_up_right.multVec(D3);
-		var c0 = raytracer.trazar_rayo(0, D0_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
-		var c1 = raytracer.trazar_rayo(0, D1_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
-		var c2 = raytracer.trazar_rayo(0, D2_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
-		var c3 = raytracer.trazar_rayo(0, D3_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+		var c0 = this.trazar_rayo(0, D0_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+		var c1 = this.trazar_rayo(0, D1_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+		var c2 = this.trazar_rayo(0, D2_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+		var c3 = this.trazar_rayo(0, D3_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
 		c0 = c0.mult(0.25);
 		c1 = c1.mult(0.25);
 		c2 = c2.mult(0.25);
 		c3 = c3.mult(0.25);
-		var c = c0.suma(c1).suma(c2).suma(c3);
+		c = c0.suma(c1).suma(c2).suma(c3);
 		return c;
 	} else {
 			var D = new Vec4(x,y,z);
 			var D_transformado = view_up_right.multVec(D);
-			var c = raytracer.trazar_rayo(O, D_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+			c = this.trazar_rayo(O, D_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+			return c;
   }
  
 
-}
+};
  
 //Color trazar_rayo(Vec4 O, Vec4 D, double t_min, double t_max, int rec_max, double ambient, List* point_lights, List* directional_lights, List* spheres, double ambient_refraction, Sphere* last_sphere, Triangle* triangles, int num_triangles, Color* texture, int skinwidth, int skinheight)
 Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, point_lights, directional_lights, spheres, ambient_refraction, last_sphere)
 {
-	var inter = intersectar(O, D, t_min, t_max, spheres);
+	var inter = this.intersectar(O, D, t_min, t_max, spheres);
 	var c = new Color();
 	var reflexion =1;
 	var transparency=1;
@@ -197,10 +198,10 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 		{
 			var pl = point_lights[i];
 			L = new Vec4(pl.vec.x-inter.P.x, pl.vec.y-inter.P.y, pl.vec.z-inter.P.z);
-			int_sombra = intersectar(inter.P, L, 0.0001, 1, sphere);
+			int_sombra = this.intersectar(inter.P, L, 0.0001, 1, spheres);
 			if(!int_sombra.exists)
 			{
-				Lambert(inter, L, D, int_dif, int_spec, pl.intensity);
+				this.Lambert(inter, L, D, int_dif, int_spec, pl.intensity);
 			}
 		}	
 		
@@ -208,10 +209,10 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 		{
 			var dl = directional_lights[i];
 			L= new Vec4(-dl.vec.x, -dl.vec.y, -dl.vec.z);
-			int_sombra= intersectar(inter.P, L, 0.0001, Infinity, spheres);
+			int_sombra= this.intersectar(inter.P, L, 0.0001, Infinity, spheres);
 			if(!int_sombra.exists)
 			{
-				Lambert(inter, L, D, int_dif, int_spec, dl.intensity);
+				this.Lambert(inter, L, D, int_dif, int_spec, dl.intensity);
 			}
 		}
 		if((reflexion)&&(rec_max>0)&&(inter.M.coef_ref>0))

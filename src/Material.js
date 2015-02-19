@@ -4,4 +4,4 @@ var Material = exports.Material = function Material(color_dif, color_spec, coef_
 	this.coef_ref = coef_ref || null;
 	this.coef_tr = coef_tr || null;
 	this.coef_refr = coef_refr || null;
-}
+};

@@ -9,5 +9,4 @@ var Sphere = exports.Sphere = function Sphere(center, radius, c_dif, c_spec, coe
 	this.coef_refr=coef_refr;
 	this.coef_tr=coef_tr;
 	return this;
-}
-
+};

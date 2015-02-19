@@ -2,16 +2,16 @@ var Color = exports.Color = function Color(r, g, b) {
 	this.r = r | 0;
 	this.g = g | 0;
 	this.b = b | 0;	
-}
+};
 Color.prototype.mult = function(h)
 {
 	var color = new Color(this.r, this.g, this.b);
 	if(color.r*h>255) color.r=255;
-	else color.r=(int) (h*color.r);
+	else color.r=Math.floor(h*color.r);
 	if(color.g*h>255) color.g=255;
-	else color.g=(int) (h*color.g);
+	else color.g=Math.floor(h*color.g);
 	if(color.b*h>255) color.b=255;
-	else color.b=(int) (h*color.b);
+	else color.b=Math.floor(h*color.b);
 	return color;
 };
 Color.prototype.suma = function(color2)

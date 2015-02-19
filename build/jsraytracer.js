@@ -17,13 +17,13 @@ var Vec4 = exports.Vec4 = function Vec4(x, y, z){
 	this.y = +y || 0;
 	this.z = +z || 0;
 	this.w = 0.0;	
-}
+};
 Vec4.prototype.copy = function()
 {
 	var vec4 = new Vec4(this.x, this.y, this.z);
 	vec4.w = this.w;
 	return vec4;
-}
+};
 
 // returns the result of the dot product between vectors a and b
 Vec4.prototype.dot = function(a, b){
@@ -44,18 +44,19 @@ Vec4.prototype.cross_s = function(a,b,c){
 	c.z=(a.x*b.y)-(a.y*b.x);
 };
 Vec4.prototype.norm = function(){
+	var v=this;
 	return(Math.sqrt((v.x)*(v.x)+(v.y)*(v.y)+(v.z)*(v.z)));
 };
 Vec4.prototype.mult = function(m){
-	vec_result = new Vec4();
+	var vec_result = new Vec4();
 	vec_result.x = this.x*m;
 	vec_result.y = this.y*m;
 	vec_result.z = this.z*m;
 	vec_result.w = 0.0;
 };
 Vec4.prototype.resta = function(y){
-	vec_result = new Vec4();
-	v=this;
+	var vec_result = new Vec4();
+	var v=this;
 	vec_result.x=v.x-y.x;
 	vec_result.y=v.y-y.y;
 	vec_result.z=v.z-y.z;
@@ -63,14 +64,15 @@ Vec4.prototype.resta = function(y){
 	return vec_result;
 };
 Vec4.prototype.suma = function(y){
-	vec_result = new Vec4();
-	v=this;
+	var vec_result = new Vec4();
+	var v=this;
 	vec_result.x=v.x+y.x;
 	vec_result.y=v.y+y.y;
 	vec_result.z=v.z+y.z;
 	vec_result.w=v.w+y.w;
 	return vec_result;
 };
+
 
 // Vec4 center, double radius, color c_dif, color c_spec, double coef_ref, double coef_refr, double coef_tr
 var Sphere = exports.Sphere = function Sphere(center, radius, c_dif, c_spec, coef_spec, coef_ref, coef_refr, coef_tr) {
@@ -83,8 +85,7 @@ var Sphere = exports.Sphere = function Sphere(center, radius, c_dif, c_spec, coe
 	this.coef_refr=coef_refr;
 	this.coef_tr=coef_tr;
 	return this;
-}
-
+};
 
 
 var Material = exports.Material = function Material(color_dif, color_spec, coef_spec, coef_ref, coef_tr, coef_refr) {
@@ -93,7 +94,7 @@ var Material = exports.Material = function Material(color_dif, color_spec, coef_
 	this.coef_ref = coef_ref || null;
 	this.coef_tr = coef_tr || null;
 	this.coef_refr = coef_refr || null;
-}
+};
 
 
 var Interseccion = exports.Interseccion = function Interseccion(exists, sphere, t, P, N, M) {
@@ -103,23 +104,23 @@ var Interseccion = exports.Interseccion = function Interseccion(exists, sphere, 
 	this.P = P || null;
 	this.N = N || null;
 	this.M = M || null;
-}	
+};
 
 
 var Color = exports.Color = function Color(r, g, b) {
 	this.r = r | 0;
 	this.g = g | 0;
 	this.b = b | 0;	
-}
+};
 Color.prototype.mult = function(h)
 {
 	var color = new Color(this.r, this.g, this.b);
 	if(color.r*h>255) color.r=255;
-	else color.r=(int) (h*color.r);
+	else color.r=Math.floor(h*color.r);
 	if(color.g*h>255) color.g=255;
-	else color.g=(int) (h*color.g);
+	else color.g=Math.floor(h*color.g);
 	if(color.b*h>255) color.b=255;
-	else color.b=(int) (h*color.b);
+	else color.b=Math.floor(h*color.b);
 	return color;
 };
 Color.prototype.suma = function(color2)
@@ -153,7 +154,7 @@ var Canvas = exports.Canvas = function Canvas(width, height) {
 	this.height = height;
 	
 	this.pixels = this.create_matrix(width, height);
-}
+};
 
 Canvas.prototype.create_matrix = function(width, height)
 {	
@@ -176,18 +177,158 @@ Canvas.prototype.putpixel = function(x, y, color) {
 };
 
 
+var Matrix4 = exports.Matrix4 =function Matrix4()
+	{
+		this.matrix=[[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0]];
+	};
+	Matrix4.prototype.makeIdentity = function()
+	{
+		var m = new Matrix4();
+		m.matrix[0][0]=1;
+		m.matrix[1][1]=1;
+		m.matrix[2][2]=1;
+		m.matrix[3][3]=1;
+		return m;
+	};
+	Matrix4.prototype.makeXRot = function(alpha)
+	{
+		alpha=(alpha/180)*Math.PI;
+		var m = new Matrix4();
+		m.matrix[0][0]=1.0;
+		m.matrix[3][3]=1.0;
+		m.matrix[1][1]=Math.cos(alpha);
+		m.matrix[1][2]=-Math.sin(alpha);
+		m.matrix[2][1]=Math.sin(alpha);
+		m.matrix[2][2]=Math.cos(alpha);
+		return m;
+	};
+	Matrix4.prototype.makeYRot = function(alpha)
+	{
+		alpha=(alpha/180)*Math.PI;
+		var m = new Matrix4();
+		m.matrix[1][1]=1.0;
+		m.matrix[3][3]=1.0;
+		m.matrix[0][0]=Math.cos(alpha);
+		m.matrix[2][0]=-Math.sin(alpha);
+		m.matrix[0][2]=Math.sin(alpha);
+		m.matrix[2][2]=Math.cos(alpha);
+		return m;
+	};
+	Matrix4.prototype.makeZRot = function(alpha)
+	{
+		alpha=(alpha/180)*Math.PI;
+		var m = new Matrix4();
+		m.matrix[2][2]=1.0;
+		m.matrix[3][3]=1.0;
+		m.matrix[0][0]=Math.cos(alpha);
+		m.matrix[0][1]=-Math.sin(alpha);
+		m.matrix[1][0]=Math.sin(alpha);
+		m.matrix[1][1]=Math.cos(alpha);
+		return m;
+	};
+	Matrix4.prototype.makeScale = function(sx, sy, sz)
+	{
+		var m = this.makeIdentity();
+		m.matrix[0][0]=sx;
+		m.matrix[1][1]=sy;
+		m.matrix[2][2]=sz;
+		return m;
+	};
+	Matrix4.prototype.makeTranslation = function(tx, ty, tz)
+	{
+		var m = this.makeIdentity();
+		m.matrix[0][3]=tx;
+		m.matrix[1][3]=ty;
+		m.matrix[2][3]=tz;
+		return m;
+	};
+	Matrix4.prototype.makeModel = function(matrices, count)
+	{
+		var x = 0;
+		var identity = this.makeIdentity();
+		var res = this.makeIdentity();
+		var temp = this.makeIdentity();
+		if(count===0) return null;
+		if(count==1) 
+		{
+			matrices[0].multMatrix(identity, res);
+			return res;
+		}
+		matrices[0].multMatrix(identity, temp);
+		for(x=1; x<count; x++)
+		{
+			matrices[x].multMatrix(temp, res);
+			res.multMatrix(res, identity, temp);
+		}
+		return res;
+	};
+	Matrix4.prototype.makeProjection = function(d)
+	{
+		var m = this.makeIdentity();
+		m.matrix.matrix[0][0]=d;
+		m.matrix.matrix[1][1]=d;
+		m.matrix.matrix[2][2]=d;
+		m.matrix.matrix[3][2]=1;
+		m.matrix.matrix[3][3]=0;
+		return m;
+	};
+	Matrix4.prototype.makeView = function(matrices, count)
+	{
+		return this.makeModel(matrices, count);
+	};
+	Matrix4.prototype.copy3d = function(result)
+	{
+		for(var x=0; x<this.matrix.length; x++)
+		{
+			for(var y=0; y<this.matrix[0].length; y++)
+			{
+				result.matrix[x][y]=this.matrix[x][y];
+			}
+		}
+	};
+	Matrix4.prototype.multMatrix= function(b, result)
+	{
+		if(this.matrix[0].length == b.matrix.length && result.matrix[0].length==b.matrix[0].length&&result.matrix.length==this.matrix.length)
+		{
+			for(var j = 0; j < result.matrix[0].length; j++)
+			{
+				for(var i = 0; i < result.matrix.length; i++)
+				{
+					var sum = 0;
+					for(var f = 0; f<this.matrix[0].length; f++)
+					{
+						sum+=this.matrix[i][f]*b.matrix[f][j];
+					}
+					result.matrix[i][j]=sum;
+				}
+			}
+		}
+	};
+	Matrix4.prototype.multVec = function(v)
+	{
+		var m = this.matrix;
+		var r = new Vec4();
+		r.x=m[0][0]*v.x+m[0][1]*v.y+m[0][2]*v.z+m[0][3]*v.w;
+        	r.y=m[1][0]*v.x+m[1][1]*v.y+m[1][2]*v.z+m[1][3]*v.w;
+        	r.y=m[2][0]*v.x+m[2][1]*v.y+m[2][2]*v.z+m[2][3]*v.w;
+        	r.y=m[3][0]*v.x+m[3][1]*v.y+m[3][2]*v.z+m[3][3]*v.w;
+		return r;
+	};
+
+
+
 var PointLight = exports.PointLight = function PointLight(vec, intensity, color) {
 	this.vec=vec;
 	this.intensity=intensity;
 	this.color=color;	
-}
+};
 
 
 var DirectionalLight = exports.DirectionalLight = function DirectionalLight(vec, intensity, color) {
 	this.vec = vec;
 	this.intensity = intensity;
 	this.color = color;
-}
+};
 
 
 var SpotLight = exports.SpotLight = function SpotLight(vec, direction, angle, intensity, color) {
@@ -201,7 +342,7 @@ var SpotLight = exports.SpotLight = function SpotLight(vec, direction, angle, in
 
 var Raytracer = exports.Raytracer = function Raytracer() {
 
-}
+};
 // void Lambert(Interseccion inter, Vec4 L,Vec4 D, double* int_dif, double* int_spec, double intensity)
 Raytracer.prototype.lambert = function(inter, L, D, int_dif, int_spec, intensity)
 {
@@ -223,7 +364,7 @@ Raytracer.prototype.lambert = function(inter, L, D, int_dif, int_spec, intensity
 	var nl = 0.0;
 	nl = inter.N.dot(L);
 	var n2 = inter.N.mult(2);
-	R = n2.rest(n2.mult(nl),L);
+	var R = n2.rest(n2.mult(nl),L);
 	R.w=0.0;
 	var res = R.dot(v) / (R.norm() * v.norm());
 	if(res > 1.0) res=1.0;
@@ -252,7 +393,7 @@ Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
 	var inter = new Interseccion(0, null, null, new Vec4(), new Vec4(), new Material(new Color(), new Color(), 0, 0, 0, 0));
 	for(var i = 0; i<spheres.length; i++)
 	{
-		sp = spheres[i];
+		var sp = spheres[i];
 		var center = sp.center;
 		var radius = sp.radius;
 		var rest = O.resta(center);
@@ -296,7 +437,7 @@ Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
 
 };
 
-Raytracer.prototype.execute(x_p, y_p)
+Raytracer.prototype.execute=function(x_p, y_p)
 {
   var x,y,z=0;
 	var cam = this.cam;
@@ -314,7 +455,7 @@ Raytracer.prototype.execute(x_p, y_p)
 	var antialiasing = this.antialiasing;
 	var view_up_right = (new Matrix4()).makeIdentity();
 
-	if(up.dot(up, view)==0)
+	if(up.dot(up, view)===0)
 	{
   	var norm=up.norm();
 		up.x=up.x/norm;
@@ -343,11 +484,11 @@ Raytracer.prototype.execute(x_p, y_p)
 		view_up_right.matrix[2][0]=right.z;
 		view_up_right.matrix[3][0]=right.w;
   }
-	var antialiasing=this.antialiasing;
   x=x_p*vw/cw;
   y=y_p*vh/ch;
   z=d;
   var O = cam.copy();
+  var c;
   if(antialiasing)
   {
   	var x1=(x_p+0.5)*vw/cw;
@@ -360,29 +501,30 @@ Raytracer.prototype.execute(x_p, y_p)
 		var D2_transformado = view_up_right.multVec(D2);
 		var D3 = new Vec4(x1, y1, z);
 		var D3_transformado = view_up_right.multVec(D3);
-		var c0 = raytracer.trazar_rayo(0, D0_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
-		var c1 = raytracer.trazar_rayo(0, D1_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
-		var c2 = raytracer.trazar_rayo(0, D2_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
-		var c3 = raytracer.trazar_rayo(0, D3_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+		var c0 = this.trazar_rayo(0, D0_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+		var c1 = this.trazar_rayo(0, D1_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+		var c2 = this.trazar_rayo(0, D2_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+		var c3 = this.trazar_rayo(0, D3_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
 		c0 = c0.mult(0.25);
 		c1 = c1.mult(0.25);
 		c2 = c2.mult(0.25);
 		c3 = c3.mult(0.25);
-		var c = c0.suma(c1).suma(c2).suma(c3);
+		c = c0.suma(c1).suma(c2).suma(c3);
 		return c;
 	} else {
 			var D = new Vec4(x,y,z);
 			var D_transformado = view_up_right.multVec(D);
-			var c = raytracer.trazar_rayo(O, D_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+			c = this.trazar_rayo(O, D_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
+			return c;
   }
  
 
-}
+};
  
 //Color trazar_rayo(Vec4 O, Vec4 D, double t_min, double t_max, int rec_max, double ambient, List* point_lights, List* directional_lights, List* spheres, double ambient_refraction, Sphere* last_sphere, Triangle* triangles, int num_triangles, Color* texture, int skinwidth, int skinheight)
 Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, point_lights, directional_lights, spheres, ambient_refraction, last_sphere)
 {
-	var inter = intersectar(O, D, t_min, t_max, spheres);
+	var inter = this.intersectar(O, D, t_min, t_max, spheres);
 	var c = new Color();
 	var reflexion =1;
 	var transparency=1;
@@ -398,10 +540,10 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 		{
 			var pl = point_lights[i];
 			L = new Vec4(pl.vec.x-inter.P.x, pl.vec.y-inter.P.y, pl.vec.z-inter.P.z);
-			int_sombra = intersectar(inter.P, L, 0.0001, 1, sphere);
+			int_sombra = this.intersectar(inter.P, L, 0.0001, 1, spheres);
 			if(!int_sombra.exists)
 			{
-				Lambert(inter, L, D, int_dif, int_spec, pl.intensity);
+				this.Lambert(inter, L, D, int_dif, int_spec, pl.intensity);
 			}
 		}	
 		
@@ -409,10 +551,10 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 		{
 			var dl = directional_lights[i];
 			L= new Vec4(-dl.vec.x, -dl.vec.y, -dl.vec.z);
-			int_sombra= intersectar(inter.P, L, 0.0001, Infinity, spheres);
+			int_sombra= this.intersectar(inter.P, L, 0.0001, Infinity, spheres);
 			if(!int_sombra.exists)
 			{
-				Lambert(inter, L, D, int_dif, int_spec, dl.intensity);
+				this.Lambert(inter, L, D, int_dif, int_spec, dl.intensity);
 			}
 		}
 		if((reflexion)&&(rec_max>0)&&(inter.M.coef_ref>0))
