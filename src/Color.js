@@ -3,8 +3,8 @@ var Color = exports.Color = function Color(r, g, b) {
 	this.g = g | 0;
 	this.b = b | 0;	
 };
-Color.prototype.mult = function(h)
-{
+
+Color.prototype.mult = function mult(h) {
 	var color = new Color(this.r, this.g, this.b);
 	if(color.r*h>255) color.r=255;
 	else color.r=Math.floor(h*color.r);
@@ -14,8 +14,8 @@ Color.prototype.mult = function(h)
 	else color.b=Math.floor(h*color.b);
 	return color;
 };
-Color.prototype.suma = function(color2)
-{	
+
+Color.prototype.suma = function suma(color2) {	
 	var color = new Color(this.r, this.g, this.b);
 	var r,r1,g,g1,b,b1=0;
 	r=Math.floor(color.r);
@@ -37,4 +37,8 @@ Color.prototype.suma = function(color2)
 	else	
 		color.b=255;
 	return color;
+};
+
+Color.prototype.toRGB = function toRGB() {
+	return (this.r & 0xFF) << 16 | (this.g & 0xFF) << 8 | (this.b & 0xFF);
 };
