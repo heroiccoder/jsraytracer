@@ -4,4 +4,4 @@ var SpotLight = exports.SpotLight = function SpotLight(vec, direction, angle, in
 	this.angle=angle;
 	this.intensity=intensity;
 	this.color=color;
-}
+};

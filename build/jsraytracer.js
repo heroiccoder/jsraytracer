@@ -1,7 +1,7 @@
 /** Package wrapper and layout.
 */
-"use strict";
 (function (global, init) { // Universal Module Definition. See <https://github.com/umdjs/umd>.
+	"use strict";
 	if (typeof define === 'function' && define.amd) {
 		define([], init); // AMD module.
 	} else if (typeof exports === 'object' && module.exports) {
@@ -10,6 +10,7 @@
 		global.jsraytracer = init();
 	}
 })(this, function __init__(){
+	"use strict";
 	var exports = { };
 
 var Vec4 = exports.Vec4 = function Vec4(x, y, z){
@@ -112,8 +113,8 @@ var Color = exports.Color = function Color(r, g, b) {
 	this.g = g | 0;
 	this.b = b | 0;	
 };
-Color.prototype.mult = function(h)
-{
+
+Color.prototype.mult = function mult(h) {
 	var color = new Color(this.r, this.g, this.b);
 	if(color.r*h>255) color.r=255;
 	else color.r=Math.floor(h*color.r);
@@ -123,8 +124,8 @@ Color.prototype.mult = function(h)
 	else color.b=Math.floor(h*color.b);
 	return color;
 };
-Color.prototype.suma = function(color2)
-{	
+
+Color.prototype.suma = function suma(color2) {	
 	var color = new Color(this.r, this.g, this.b);
 	var r,r1,g,g1,b,b1=0;
 	r=Math.floor(color.r);
@@ -148,6 +149,9 @@ Color.prototype.suma = function(color2)
 	return color;
 };
 
+Color.prototype.toRGB = function toRGB() {
+	return (this.r & 0xFF) << 16 | (this.g & 0xFF) << 8 | (this.b & 0xFF);
+};
 
 var Canvas = exports.Canvas = function Canvas(width, height) {	
 	this.width = width;
@@ -337,7 +341,7 @@ var SpotLight = exports.SpotLight = function SpotLight(vec, direction, angle, in
 	this.angle=angle;
 	this.intensity=intensity;
 	this.color=color;
-}
+};
 
 
 var Raytracer = exports.Raytracer = function Raytracer() {
