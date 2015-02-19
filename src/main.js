@@ -31,9 +31,7 @@ server.scheduleAll(jobs, 1000, function (scheduled) {
 	return scheduled.then(function (result) {
 		server.logger.info(result);
 		return true;
-	} else {
-		return false;
-	}
+		}
 });
 }).then(function () {
 	    server.logger.info("Finished. Stopping server.");
