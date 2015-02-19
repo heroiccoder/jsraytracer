@@ -7,7 +7,7 @@ var capataz = require('capataz'),
 			  customFiles: './'
     });
 var jobs = [];
-var config = require("src/config.json");
+var config = require("src/scene.json");
 var jobfunction(x, y)
 {
 	var raytracer = new Raytracer();
