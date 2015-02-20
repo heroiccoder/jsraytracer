@@ -4,7 +4,7 @@ var Color = exports.Color = function Color(r, g, b) {
 	this.b = b | 0;	
 };
 
-Color.prototype.mult = function mult(h) {
+Color.prototype.multiply = function mult(h) {
 	var color = new Color(this.r, this.g, this.b);
 	if(color.r*h>255) color.r=255;
 	else color.r=Math.floor(h*color.r);

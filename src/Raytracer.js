@@ -10,10 +10,10 @@ Raytracer.prototype.lambert = function(inter, L, D, int_dif, int_spec, intensity
 	v.z=-D.z;
 	v.w=0.0;
 	var norm = L.norm();
-	L = L.mult(1/norm);
+	L = L.multiply(1/norm);
 	L.w=0;
 	norm = inter.P.norm();
-	inter.P = inter.P.mult(1/norm);
+	inter.P = inter.P.multiply(1/norm);
 	inter.P.w=0;
 	var temp = 0.0;
 	temp = inter.N.dot(L) / (inter.N.norm() * L.norm());
@@ -21,8 +21,8 @@ Raytracer.prototype.lambert = function(inter, L, D, int_dif, int_spec, intensity
 	int_dif+= temp * intensity;
 	var nl = 0.0;
 	nl = inter.N.dot(L);
-	var n2 = inter.N.mult(2);
-	var R = n2.rest(n2.mult(nl),L);
+	var n2 = inter.N.multiply(2);
+	var R = n2.rest(n2.multiply(nl),L);
 	R.w=0.0;
 	var res = R.dot(v) / (R.norm() * v.norm());
 	if(res > 1.0) res=1.0;
@@ -54,7 +54,7 @@ Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
 		var sp = spheres[i];
 		var center = sp.center;
 		var radius = sp.radius;
-		var rest = O.resta(center);
+		var rest = O.subtract(center);
 		b = 2*D.dot(rest);
 		c = rest.dot(rest) - (radius*radius);
 		var det = b * b - 4 * a * c;
@@ -67,11 +67,11 @@ Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
 			if((calc_t1>=t_min)&&(calc_t1<t_max)&&(calc_t1<t))
 			{
 				t = calc_t1;
-				var dt = D.mult(t);
+				var dt = D.multiply(t);
 				var P = dt.sum(O);
-				var N = P.resta(center);
+				var N = P.subtract(center);
 				var norm = N.norm();
-				N = N.mult(1/norm);
+				N = N.multiply(1/norm);
 				inter.exists=1;
 				inter.P = P;
 				inter.N = N;
@@ -113,7 +113,7 @@ Raytracer.prototype.execute=function(x_p, y_p)
 	var antialiasing = this.antialiasing;
 	var view_up_right = (new Matrix4()).makeIdentity();
 
-	if(up.dot(up, view)===0)
+	if(up.dot(view)===0)
 	{
   	var norm=up.norm();
 		up.x=up.x/norm;
@@ -123,7 +123,7 @@ Raytracer.prototype.execute=function(x_p, y_p)
     view.x=view.x/norm;
     view.y=view.y/norm;
     view.z=view.z/norm;
-    var right = up.cross(up, view);
+    var right = up.cross(view);
     norm = right.norm();
 		right.x=right.x/norm;
     right.y=right.y/norm;
@@ -163,11 +163,11 @@ Raytracer.prototype.execute=function(x_p, y_p)
 		var c1 = this.trazar_rayo(0, D1_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
 		var c2 = this.trazar_rayo(0, D2_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
 		var c3 = this.trazar_rayo(0, D3_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
-		c0 = c0.mult(0.25);
-		c1 = c1.mult(0.25);
-		c2 = c2.mult(0.25);
-		c3 = c3.mult(0.25);
-		c = c0.suma(c1).suma(c2).suma(c3);
+		c0 = c0.multiply(0.25);
+		c1 = c1.multiply(0.25);
+		c2 = c2.multiply(0.25);
+		c3 = c3.multiply(0.25);
+		c = c0.add(c1).add(c2).add(c3);
 		return c;
 	} else {
 			var D = new Vec4(x,y,z);
@@ -188,7 +188,7 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 	var transparency=1;
 	if(inter.exists)
 	{
-		c=inter.M.color_dif.mult(ambient);
+		c=inter.M.color_dif.multiply(ambient);
 		var int_dif = 0;
 		var int_spec = 0;
 		var L;
@@ -217,10 +217,10 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 		}
 		if((reflexion)&&(rec_max>0)&&(inter.M.coef_ref>0))
 		{
-			c = (inter.M.color_dif.mult(int_dif)).sum(inter.M.color_spec.mult(int_spec), c);
+			c = (inter.M.color_dif.multiply(int_dif)).sum(inter.M.color_spec.multiply(int_spec), c);
 			var nullVector = new Vec4();
-			var rest = nullVector.resta(D);
-			var R = (inter.N.mult(2*inter.N.dot(rest))).sum(D);
+			var rest = nullVector.subtract(D);
+			var R = (inter.N.multiply(2*inter.N.dot(rest))).sum(D);
 		}
 	}
 	return c;

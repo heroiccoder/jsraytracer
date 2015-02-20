@@ -26,36 +26,54 @@ Vec4.prototype.copy = function()
 	return vec4;
 };
 
-// returns the result of the dot product between vectors a and b
-Vec4.prototype.dot = function(a, b){
-	return(a.x*b.x+a.y*b.y+a.z*b.z);
+// returns the result of the dot product between vectors this and b
+Vec4.prototype.dot = function(b){
+	return(this.x*b.x+this.y*b.y+this.z*b.z);
 };
 // returns the result of the cross product of vectors a and b in a new vector
-Vec4.prototype.cross = function(a,b){
+Vec4.cross = function(a,b){
 	var vec_result = new Vec4();
 	vec_result.x=(a.y*b.z)-(a.z*b.y);
 	vec_result.y=-((a.x*b.z)-(a.z*b.x));
 	vec_result.z=(a.x*b.y)-(a.y*b.x);
 	return vec_result;
 };
+// returns the result of the cross product of 'this' vector and b in a new vector
+Vec4.prototype.cross = function(b)
+{
+	var vec_result = new Vec4();
+	vec_result.x=(this.y*b.z)-(this.z*b.y);
+	vec_result.y=-((this.x*b.z)-(this.z*b.x));
+	vec_result.z=(this.x*b.y)-(this.y*b.x);
+	return vec_result;
+};
 // stores in vector c the cross product of vectors a and b
-Vec4.prototype.cross_s = function(a,b,c){
+Vec4.cross_s = function(a,b,c){
 	c.x=(a.y*b.z)-(a.z*b.y);
 	c.y=-((a.x*b.z)-(a.z*b.x));
 	c.z=(a.x*b.y)-(a.y*b.x);
 };
+
+// stores in vector c the cross product of vectors 'this' and b
+Vec4.prototype.cross_s = function(b,c){
+	c.x=(this.y*b.z)-(this.z*b.y);
+	c.y=-((this.x*b.z)-(this.z*b.x));
+	c.z=(this.x*b.y)-(this.y*b.x);
+};
+
 Vec4.prototype.norm = function(){
 	var v=this;
 	return(Math.sqrt((v.x)*(v.x)+(v.y)*(v.y)+(v.z)*(v.z)));
 };
-Vec4.prototype.mult = function(m){
+Vec4.prototype.multiply = function(m){
 	var vec_result = new Vec4();
 	vec_result.x = this.x*m;
 	vec_result.y = this.y*m;
 	vec_result.z = this.z*m;
 	vec_result.w = 0.0;
+	return vec_result;
 };
-Vec4.prototype.resta = function(y){
+Vec4.prototype.subtract = function(y){
 	var vec_result = new Vec4();
 	var v=this;
 	vec_result.x=v.x-y.x;
@@ -64,7 +82,7 @@ Vec4.prototype.resta = function(y){
 	vec_result.w=v.w-y.w;
 	return vec_result;
 };
-Vec4.prototype.suma = function(y){
+Vec4.prototype.add = function(y){
 	var vec_result = new Vec4();
 	var v=this;
 	vec_result.x=v.x+y.x;
@@ -114,7 +132,7 @@ var Color = exports.Color = function Color(r, g, b) {
 	this.b = b | 0;	
 };
 
-Color.prototype.mult = function mult(h) {
+Color.prototype.multiply = function mult(h) {
 	var color = new Color(this.r, this.g, this.b);
 	if(color.r*h>255) color.r=255;
 	else color.r=Math.floor(h*color.r);
@@ -152,6 +170,7 @@ Color.prototype.suma = function suma(color2) {
 Color.prototype.toRGB = function toRGB() {
 	return (this.r & 0xFF) << 16 | (this.g & 0xFF) << 8 | (this.b & 0xFF);
 };
+
 
 var Canvas = exports.Canvas = function Canvas(width, height) {	
 	this.width = width;
@@ -356,10 +375,10 @@ Raytracer.prototype.lambert = function(inter, L, D, int_dif, int_spec, intensity
 	v.z=-D.z;
 	v.w=0.0;
 	var norm = L.norm();
-	L = L.mult(1/norm);
+	L = L.multiply(1/norm);
 	L.w=0;
 	norm = inter.P.norm();
-	inter.P = inter.P.mult(1/norm);
+	inter.P = inter.P.multiply(1/norm);
 	inter.P.w=0;
 	var temp = 0.0;
 	temp = inter.N.dot(L) / (inter.N.norm() * L.norm());
@@ -367,8 +386,8 @@ Raytracer.prototype.lambert = function(inter, L, D, int_dif, int_spec, intensity
 	int_dif+= temp * intensity;
 	var nl = 0.0;
 	nl = inter.N.dot(L);
-	var n2 = inter.N.mult(2);
-	var R = n2.rest(n2.mult(nl),L);
+	var n2 = inter.N.multiply(2);
+	var R = n2.rest(n2.multiply(nl),L);
 	R.w=0.0;
 	var res = R.dot(v) / (R.norm() * v.norm());
 	if(res > 1.0) res=1.0;
@@ -400,7 +419,7 @@ Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
 		var sp = spheres[i];
 		var center = sp.center;
 		var radius = sp.radius;
-		var rest = O.resta(center);
+		var rest = O.subtract(center);
 		b = 2*D.dot(rest);
 		c = rest.dot(rest) - (radius*radius);
 		var det = b * b - 4 * a * c;
@@ -413,11 +432,11 @@ Raytracer.intersectar = function(O ,D, t_min, t_max, spheres)
 			if((calc_t1>=t_min)&&(calc_t1<t_max)&&(calc_t1<t))
 			{
 				t = calc_t1;
-				var dt = D.mult(t);
+				var dt = D.multiply(t);
 				var P = dt.sum(O);
-				var N = P.resta(center);
+				var N = P.subtract(center);
 				var norm = N.norm();
-				N = N.mult(1/norm);
+				N = N.multiply(1/norm);
 				inter.exists=1;
 				inter.P = P;
 				inter.N = N;
@@ -459,7 +478,7 @@ Raytracer.prototype.execute=function(x_p, y_p)
 	var antialiasing = this.antialiasing;
 	var view_up_right = (new Matrix4()).makeIdentity();
 
-	if(up.dot(up, view)===0)
+	if(up.dot(view)===0)
 	{
   	var norm=up.norm();
 		up.x=up.x/norm;
@@ -469,7 +488,7 @@ Raytracer.prototype.execute=function(x_p, y_p)
     view.x=view.x/norm;
     view.y=view.y/norm;
     view.z=view.z/norm;
-    var right = up.cross(up, view);
+    var right = up.cross(view);
     norm = right.norm();
 		right.x=right.x/norm;
     right.y=right.y/norm;
@@ -509,11 +528,11 @@ Raytracer.prototype.execute=function(x_p, y_p)
 		var c1 = this.trazar_rayo(0, D1_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
 		var c2 = this.trazar_rayo(0, D2_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
 		var c3 = this.trazar_rayo(0, D3_transformado, 1, Number.MAX_SAFE_INTEGER, 3, ambient, pointLights, directionalLights, spheres, 1.0, null);
-		c0 = c0.mult(0.25);
-		c1 = c1.mult(0.25);
-		c2 = c2.mult(0.25);
-		c3 = c3.mult(0.25);
-		c = c0.suma(c1).suma(c2).suma(c3);
+		c0 = c0.multiply(0.25);
+		c1 = c1.multiply(0.25);
+		c2 = c2.multiply(0.25);
+		c3 = c3.multiply(0.25);
+		c = c0.add(c1).add(c2).add(c3);
 		return c;
 	} else {
 			var D = new Vec4(x,y,z);
@@ -534,7 +553,7 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 	var transparency=1;
 	if(inter.exists)
 	{
-		c=inter.M.color_dif.mult(ambient);
+		c=inter.M.color_dif.multiply(ambient);
 		var int_dif = 0;
 		var int_spec = 0;
 		var L;
@@ -563,10 +582,10 @@ Raytracer.prototype.trazar_rayo=function(O, D, t_min, t_max, rec_max, ambient, p
 		}
 		if((reflexion)&&(rec_max>0)&&(inter.M.coef_ref>0))
 		{
-			c = (inter.M.color_dif.mult(int_dif)).sum(inter.M.color_spec.mult(int_spec), c);
+			c = (inter.M.color_dif.multiply(int_dif)).sum(inter.M.color_spec.multiply(int_spec), c);
 			var nullVector = new Vec4();
-			var rest = nullVector.resta(D);
-			var R = (inter.N.mult(2*inter.N.dot(rest))).sum(D);
+			var rest = nullVector.subtract(D);
+			var R = (inter.N.multiply(2*inter.N.dot(rest))).sum(D);
 		}
 	}
 	return c;
