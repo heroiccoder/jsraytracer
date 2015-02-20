@@ -1,0 +1,23 @@
+{
+	cam: {x: 0.0, y: 0.5, z: 0.0, w: 0.0},
+	distance: 1.0,
+	ambient: 0.10,
+	viewportWidth: 2.0, 
+	viewportHeight: 2.0,
+	canvasWidth: 640,
+	canvasHeight : 640,
+	view : {0,0,0,0},
+	up : {0,0,0,0},
+	antialiasing: true,
+	pointLights: [ {intensity: 0.55, vec: { x: 1.5, y: 1.5, z: 1.0, w:0.0}, color: {r:255, g:255, b:255}},
+						 {intensity: 0.35, vec: {x: -0.5, y: 0.5, z: 0.00, w:0.0}, color: {r:255, g:255, b:255}},
+						 {intensity: 0.35, vec: {x: -5, y: 5, z: 5.00, w:0.0}, color: {r:255, g:255, b:255}}
+					],
+	lightsD: [],
+	spheres: [
+	{center: {x: 0.0, y:0.0, z:1.75, w:0.0}, radius: 0.50,  color_dif: {r:1.0, g:0.0, b:0.0}, color_spec: {r:1.0, g:1.0, b:1.0}, coef_spec: 10.0, coef_ref: 0.5, coef_refr:1.3, coef_tr:0.4},
+	{center: {x: -1.0, y:0.5, z:2.00, w:0.0}, radius: 0.50,  color_dif: {r:0.0, g:1.0, b:0.0}, color_spec: {r:1.0, g:1.0, b:1.0}, coef_spec: 10.0, coef_ref: 0.5, coef_refr:1.3, coef_tr:0.2},
+	{center: {x: 1.0, y:0.5, z:2.0, w:0.0}, radius: 0.50,  color_dif: {r:0.0, g:0.0, b:1.0}, color_spec: {r:1.0, g:1.0, b:1.0}, coef_spec: 10.0, coef_ref: 0.5, coef_refr:0.1, coef_tr:0.5},
+	{center: {x: 0.0, y:-1000.0, z:0.00, w:0.0}, radius: 1000.0,  color_dif: {r:1.0, g:1.0, b:0.5}, color_spec: {r:1.0, g:1.0, b:0.5}, coef_spec: -1.0, coef_ref: 0.0, coef_refr:1.0, coef_tr:0.0}
+					]
+}
