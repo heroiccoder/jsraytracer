@@ -1,7 +1,17 @@
 var Matrix4 = exports.Matrix4 =function Matrix4()
 	{
 		this.matrix=[[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0]];
+		
 	};
+	Matrix4.makeIdentity = function()
+	{
+		var m = new Matrix4();
+		m.matrix[0][0]=1;
+		m.matrix[1][1]=1;
+		m.matrix[2][2]=1;
+		m.matrix[3][3]=1;
+		return m;
+	}
 	Matrix4.prototype.makeIdentity = function()
 	{
 		var m = new Matrix4();
