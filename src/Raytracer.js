@@ -111,7 +111,7 @@ Raytracer.prototype.execute=function(x_p, y_p)
 	var directionalLights = this.directionalLights;
 	var spheres = this.spheres;
 	var antialiasing = this.antialiasing;
-	var view_up_right = (new Matrix4()).makeIdentity();
+	var view_up_right = Matrix4.makeIdentity();
 
 	if(up.dot(view)===0)
 	{
