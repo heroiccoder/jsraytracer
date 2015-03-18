@@ -5,6 +5,7 @@ var Canvas = exports.Canvas = function Canvas(width, height) {
 	this.pixels = this.create_matrix(width, height);
 };
 
+
 Canvas.prototype.create_matrix = function(width, height)
 {	
 	var pixels = new Array(width);
